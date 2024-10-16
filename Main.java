@@ -1,5 +1,4 @@
 import java.util.*;
-import java.math.*;
 import java.io.*;
 
 public class Main {
@@ -33,6 +32,7 @@ public class Main {
                     System.out.println("-------------------");
                 }
             }
+            fileReader.close();
         }
         catch (FileNotFoundException e){
             System.out.println("File not found ERROR");
