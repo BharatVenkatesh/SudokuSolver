@@ -1,12 +1,12 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         int[][] table = new int[9][9];
         try{
             //tries to find a file from the input, appends .txt
-            File fil = new File(args[0]+".txt");
+            File fil = new File(args[0]);
             Scanner fileReader = new Scanner(fil);
 
             //puts input from the file into the table, input must have spaces after every value and a new line when its a new row of the sudoku puzzle
@@ -24,12 +24,12 @@ public class Main {
                 for(int j=0; j<table[i].length; j++) {
                 System.out.print(table[i][j]+" ");
                     if((j+1)%3==0 && j<7) {
-                        System.out.print("|");
+                        System.out.print("| ");
                     }
                 }
                 System.out.println();
                 if((i+1)%3==0 && i<7) {
-                    System.out.println("-------------------");
+                    System.out.println("---------------------");
                 }
             }
             fileReader.close();
