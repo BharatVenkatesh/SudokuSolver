@@ -1,0 +1,5 @@
+input1 is #1199  https://www.puzzles.ca/sudoku_puzzles/sudoku_hard_1199.html 
+input1 answer is #1199  https://www.puzzles.ca/sudoku_puzzles/sudoku_hard_1199_solution.html
+
+input2 is #1197  https://www.puzzles.ca/sudoku_puzzles/sudoku_hard_1197.html
+input2 answer is #1197  https://www.puzzles.ca/sudoku_puzzles/sudoku_hard_1197_solution.html

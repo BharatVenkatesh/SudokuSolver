@@ -9,6 +9,7 @@ public class Main {
     public static int[][] subtablehistory = null;
 
     public static void printTable() {
+        System.out.println();
         for(int i=0; i<table.length; i++) {
             for(int j=0; j<table[i].length; j++) {
             System.out.print(table[i][j]+" ");
@@ -21,6 +22,7 @@ public class Main {
                 System.out.println("---------------------");
             }
         }
+        System.out.println();
     }
 
     //Goes through rows and if there is a non zero value, removes it from notes
@@ -102,8 +104,6 @@ public class Main {
                 }
             }
         }
-        //System.out.println(entriesG);
-
         for(int i=0; i<notes.length; i++) {
             for(int j=0; j<notes[i].length; j++) {
 
@@ -127,35 +127,106 @@ public class Main {
         }
     }
 
-    //checks if there is only a single spot where there can be a value within that grid/should also do this for col/rows maybe
+    //checks if there is only a single spot where there can be a value within that grid
     public static void singleInGrid() {
-        for(int i=0; i<notes.length; i++) {
-            for(int j=0; j<notes[i].length; j++) {
-                if(notes[i][j] != null) {
-                        if(i < 3 && j < 3)      {iterateGrid(i, j);}
-                        else if(i < 3 && j < 6) {iterateGrid(i, j);}
-                        else if(i < 3 && j < 9) {iterateGrid(i, j);}
-                        else if(i < 6 && j < 3) {iterateGrid(i, j);}
-                        else if(i < 6 && j < 6) {iterateGrid(i, j);}
-                        else if(i < 6 && j < 9) {iterateGrid(i, j);}
-                        else if(i < 9 && j < 3) {iterateGrid(i, j);}
-                        else if(i < 9 && j < 6) {iterateGrid(i, j);}
-                        else if(i < 9 && j < 9) {iterateGrid(i, j);}
+        int RowBounds = 3;
+        int ColBounds = 3;
+        for(int b=0; b<9; b++) {
+            for(int p=1; p<10; p++) {
+                int count=0;
+                int i_m = 0;
+                int j_m = 0;
+                for(int i=RowBounds-3; i<RowBounds; i++) {
+                    for(int j=ColBounds-3; j<ColBounds; j++) {
+                        if(notes[i][j] != null) {
+                            for(int k=0; k<notes[i][j].length; k++) {
+                                if(notes[i][j][k] == p) {
+                                    count++;
+                                    i_m = i;
+                                    j_m = j;
+                                }
+                            }
+                        }
                     }
+                }
+                if(count == 1) {
+                    table[i_m][j_m] = p;
+                    notes[i_m][j_m] = null;
+                    System.out.println("put "+p+" at "+i_m+", "+j_m+"   only value for the grid");
+                    subtables = createSubTables();
+                    checkGrid(subtables);
+                    checkRows();
+                    checkColumns();
+                }
+            }
+            ColBounds+=3;
+            if(ColBounds > 9) {
+                ColBounds = 3;
+                RowBounds += 3;
             }
         }
     }
-    public static void iterateGrid(int i, int j) {
-        for(int p=1; p<9; p++) {
-            int count=0;
-            for(int k=0; k<notes[i][j].length; k++) {
-                if(notes[i][j][k] == p) {
-                    count++;
+
+    //check if there is a single spot in a row where spot where there can be a value within that row
+    public static void singleInRow() {
+        
+        for(int i=0; i<notes.length; i++) {
+            for(int p=1; p<10; p++) {
+                int count = 0;
+                int i_m = 0;
+                int j_m = 0;
+                for(int j=0; j<notes[i].length; j++) {
+                    if(notes[i][j] != null) {
+                        for(int k=0; k<notes[i][j].length; k++) {
+                            if(notes[i][j][k] == p) {
+                                count++;
+                                i_m = i;
+                                j_m = j;
+                            }
+                        }
+                    }
+                }
+                if(count == 1) {
+                    System.out.println("put "+p+" at "+i_m+", "+j_m+"   only value in the row");
+                    table[i_m][j_m] = p;
+                    notes[i_m][j_m] = null;
+                    checkRows();
+                    checkColumns();
+                    subtables = createSubTables();
+                    checkGrid(subtables);
                 }
             }
-            if(count == 1) {
-                table[i][j] = p;
-                notes[i][j] = null;
+        }
+    }
+
+    //check if there is a single spot in a column where spot where there can be a value within that column
+    public static void singleInCol() {
+        
+        for(int j=0; j<notes.length; j++) {
+            for(int p=1; p<10; p++) {
+                int count = 0;
+                int i_m = 0;
+                int j_m = 0;
+                for(int i=0; i<notes[j].length; i++) {
+                    if(notes[i][j] != null) {
+                        for(int k=0; k<notes[i][j].length; k++) {
+                            if(notes[i][j][k] == p) {
+                                count++;
+                                i_m = i;
+                                j_m = j;
+                            }
+                        }
+                    }
+                }
+                if(count == 1) {
+                    table[i_m][j_m] = p;
+                    notes[i_m][j_m] = null;
+                    System.out.println("put "+p+" at "+i_m+", "+j_m+"   only value for the column");
+                    checkColumns();
+                    checkRows();
+                    subtables = createSubTables();
+                    checkGrid(subtables);
+                }
             }
         }
     }
@@ -232,6 +303,28 @@ public class Main {
         System.out.println("Was not able to solve sudoku puzzle. May be impossible to solve due to lack of entries.");
         return false;
     }
+    
+    public static void printNotes() {
+        for(int i=0; i<notes.length; i++) {
+            for(int j=0; j<notes[i].length; j++) {
+                System.out.print("{");
+                if(notes[i][j] != null){
+                    for(int k=0; k<notes[i][j].length; k++) {
+                        if(notes[i][j].length == 1) {
+                            table[i][j] = notes[i][j][k];
+                            notes[i][j][k] = 0;
+                        }
+                        if(notes[i][j][k] != 0) {
+                            System.out.print(notes[i][j][k]);
+                        }
+                    }
+                }
+                System.out.print("}, ");
+            }
+            System.out.println();
+        } 
+        System.out.println();
+    }
     public static void main(String[] args) {
         try{
             //tries to find a file from the input, appends .txt
@@ -269,32 +362,18 @@ public class Main {
         }
 
         //if 5 cannot be anywhere else in a grid, it must be at that spot, do this check
-        while(!isComplete()) {
-            /* for(int i=0; i<notes.length; i++) {
-            for(int j=0; j<notes[i].length; j++) {
-                System.out.print("{");
-                if(notes[i][j] != null){
-                    for(int k=0; k<notes[i][j].length; k++) {
-                        if(notes[i][j].length == 1) {
-                            table[i][j] = notes[i][j][k];
-                            notes[i][j][k] = 0;
-                        }
-                        if(notes[i][j][k] != 0) {
-                            System.out.print(notes[i][j][k]);
-                        }
-                    }
-                }
-                System.out.print("}, ");
-            }
-            System.out.println();
-        } */
-        
-        System.out.println();
+        while(isProgress() && !isComplete()) {
             printTable();
+            
             checkRows();
             checkColumns();
             subtables = createSubTables();
             checkGrid(subtables);
+
+            singleInRow();
+            singleInCol();
+            singleInGrid();
+
             restruct();
         }
 
@@ -315,29 +394,9 @@ public class Main {
 
 
         System.out.println();
-        //prints out the notes
-        for(int i=0; i<notes.length; i++) {
-            for(int j=0; j<notes[i].length; j++) {
-                System.out.print("{");
-                if(notes[i][j] != null){
-                    for(int k=0; k<notes[i][j].length; k++) {
-                        if(notes[i][j].length == 1) {
-                            table[i][j] = notes[i][j][k];
-                            notes[i][j][k] = 0;
-                        }
-                        if(notes[i][j][k] != 0) {
-                            System.out.print(notes[i][j][k]);
-                        }
-                    }
-                }
-                System.out.print("}, ");
-            }
-            System.out.println();
-        }
         
-        System.out.println();
-         */
-
+        printNotes();
+*/
         //prints out the table
         printTable();
 
