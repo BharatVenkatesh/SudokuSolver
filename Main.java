@@ -4,6 +4,9 @@ import java.util.*;
 public class Main {
     public static int[][] table = new int[9][9];
     public static int[][][] notes = new int[9][9][9];
+    public static int[][] subtables = null;
+    public static int[][][] notehistory = null;
+    public static int[][] subtablehistory = null;
 
     public static void printTable() {
         for(int i=0; i<table.length; i++) {
@@ -75,15 +78,15 @@ public class Main {
         int[][] subtables = new int[9][9];
         for(int i=0; i<table.length; i++) {
             for(int j=0; j<notes[i].length; j++) {
-                if(i < 3 && j < 3)      {subtables[0][j  +(3*(i%3))] = table[i][j];}
-                else if(i < 3 && j < 6) {subtables[1][j-3+(3*(i%3))] = table[i][j];}
-                else if(i < 3 && j < 9) {subtables[2][j-6+(3*(i%3))] = table[i][j];}
-                else if(i < 6 && j < 3) {subtables[3][j  +(3*(i%3))] = table[i][j];}
-                else if(i < 6 && j < 6) {subtables[4][j-3+(3*(i%3))] = table[i][j];}
-                else if(i < 6 && j < 9) {subtables[5][j-6+(3*(i%3))] = table[i][j];}
-                else if(i < 9 && j < 3) {subtables[6][j  +(3*(i%3))] = table[i][j];}
-                else if(i < 9 && j < 6) {subtables[7][j-3+(3*(i%3))] = table[i][j];}
-                else if(i < 9 && j < 9) {subtables[8][j-6+(3*(i%3))] = table[i][j];}
+                if(i < 3 && j < 3)      {subtables[0][j%3+(3*(i%3))] = table[i][j];}
+                else if(i < 3 && j < 6) {subtables[1][j%3+(3*(i%3))] = table[i][j];}
+                else if(i < 3 && j < 9) {subtables[2][j%3+(3*(i%3))] = table[i][j];}
+                else if(i < 6 && j < 3) {subtables[3][j%3+(3*(i%3))] = table[i][j];}
+                else if(i < 6 && j < 6) {subtables[4][j%3+(3*(i%3))] = table[i][j];}
+                else if(i < 6 && j < 9) {subtables[5][j%3+(3*(i%3))] = table[i][j];}
+                else if(i < 9 && j < 3) {subtables[6][j%3+(3*(i%3))] = table[i][j];}
+                else if(i < 9 && j < 6) {subtables[7][j%3+(3*(i%3))] = table[i][j];}
+                else if(i < 9 && j < 9) {subtables[8][j%3+(3*(i%3))] = table[i][j];}
             }
         }
         return subtables;
@@ -99,30 +102,64 @@ public class Main {
                 }
             }
         }
+        //System.out.println(entriesG);
 
         for(int i=0; i<notes.length; i++) {
             for(int j=0; j<notes[i].length; j++) {
 
-                for(int p=0; p<entriesG.get(i).size(); p++) {
+                for(int p=0; p<9; p++) {
                     //if a value in entries is in the notes GRID then it is removed
                     if(notes[i][j] != null) {
                         for(int k=0; k<notes[i][j].length; k++) {
-                            if(i < 3 && j < 3)      {if(notes[0][j  +(3*(i%3))] != null && entriesG.get(i).get(p) == notes[0][j  +(3*(i%3))][k]) {notes[0][j  +(3*(i%3))][k] = 0;}}
-                            else if(i < 3 && j < 6) {if(notes[1][j-3+(3*(i%3))] != null && entriesG.get(i).get(p) == notes[1][j-3+(3*(i%3))][k]) {notes[1][j-3+(3*(i%3))][k] = 0;}}
-                            else if(i < 3 && j < 9) {if(notes[2][j-6+(3*(i%3))] != null && entriesG.get(i).get(p) == notes[2][j-6+(3*(i%3))][k]) {notes[2][j-6+(3*(i%3))][k] = 0;}}
-                            else if(i < 6 && j < 3) {if(notes[3][j  +(3*(i%3))] != null && entriesG.get(i).get(p) == notes[3][j  +(3*(i%3))][k]) {notes[3][j  +(3*(i%3))][k] = 0;}}
-                            else if(i < 6 && j < 6) {if(notes[4][j-3+(3*(i%3))] != null && entriesG.get(i).get(p) == notes[4][j-3+(3*(i%3))][k]) {notes[4][j-3+(3*(i%3))][k] = 0;}}
-                            else if(i < 6 && j < 9) {if(notes[5][j-6+(3*(i%3))] != null && entriesG.get(i).get(p) == notes[5][j-6+(3*(i%3))][k]) {notes[5][j-6+(3*(i%3))][k] = 0;}}
-                            else if(i < 9 && j < 3) {if(notes[6][j  +(3*(i%3))] != null && entriesG.get(i).get(p) == notes[6][j  +(3*(i%3))][k]) {notes[6][j  +(3*(i%3))][k] = 0;}}
-                            else if(i < 9 && j < 6) {if(notes[7][j-3+(3*(i%3))] != null && entriesG.get(i).get(p) == notes[7][j-3+(3*(i%3))][k]) {notes[7][j-3+(3*(i%3))][k] = 0;}}
-                            else if(i < 9 && j < 9) {if(notes[8][j-6+(3*(i%3))] != null && entriesG.get(i).get(p) == notes[8][j-6+(3*(i%3))][k]) {notes[8][j-6+(3*(i%3))][k] = 0;}}
-                        }
+                            if(i < 3 && j < 3)      {if(p < entriesG.get(0).size() && entriesG.get(0).get(p) == notes[i][j][k]) {notes[i][j][k] = 0;}}
+                            else if(i < 3 && j < 6) {if(p < entriesG.get(1).size() &&  entriesG.get(1).get(p) == notes[i][j][k]) {notes[i][j][k] = 0;}}
+                            else if(i < 3 && j < 9) {if(p < entriesG.get(2).size() &&  entriesG.get(2).get(p) == notes[i][j][k]) {notes[i][j][k] = 0;}}
+                            else if(i < 6 && j < 3) {if(p < entriesG.get(3).size() &&  entriesG.get(3).get(p) == notes[i][j][k]) {notes[i][j][k] = 0;}}
+                            else if(i < 6 && j < 6) {if(p < entriesG.get(4).size() &&  entriesG.get(4).get(p) == notes[i][j][k]) {notes[i][j][k] = 0;}}
+                            else if(i < 6 && j < 9) {if(p < entriesG.get(5).size() &&  entriesG.get(5).get(p) == notes[i][j][k]) {notes[i][j][k] = 0;}}
+                            else if(i < 9 && j < 3) {if(p < entriesG.get(6).size() &&  entriesG.get(6).get(p) == notes[i][j][k]) {notes[i][j][k] = 0;}}
+                            else if(i < 9 && j < 6) {if(p < entriesG.get(7).size() &&  entriesG.get(7).get(p) == notes[i][j][k]) {notes[i][j][k] = 0;}}
+                            else if(i < 9 && j < 9) {if(p < entriesG.get(8).size() &&  entriesG.get(8).get(p) == notes[i][j][k]) {notes[i][j][k] = 0;}}
+                         }
                     }
                 }
             }
         }
     }
 
+    //checks if there is only a single spot where there can be a value within that grid/should also do this for col/rows maybe
+    public static void singleInGrid() {
+        for(int i=0; i<notes.length; i++) {
+            for(int j=0; j<notes[i].length; j++) {
+                if(notes[i][j] != null) {
+                        if(i < 3 && j < 3)      {iterateGrid(i, j);}
+                        else if(i < 3 && j < 6) {iterateGrid(i, j);}
+                        else if(i < 3 && j < 9) {iterateGrid(i, j);}
+                        else if(i < 6 && j < 3) {iterateGrid(i, j);}
+                        else if(i < 6 && j < 6) {iterateGrid(i, j);}
+                        else if(i < 6 && j < 9) {iterateGrid(i, j);}
+                        else if(i < 9 && j < 3) {iterateGrid(i, j);}
+                        else if(i < 9 && j < 6) {iterateGrid(i, j);}
+                        else if(i < 9 && j < 9) {iterateGrid(i, j);}
+                    }
+            }
+        }
+    }
+    public static void iterateGrid(int i, int j) {
+        for(int p=1; p<9; p++) {
+            int count=0;
+            for(int k=0; k<notes[i][j].length; k++) {
+                if(notes[i][j][k] == p) {
+                    count++;
+                }
+            }
+            if(count == 1) {
+                table[i][j] = p;
+                notes[i][j] = null;
+            }
+        }
+    }
+    
     //goes through the notes array and checks if there is any single non zero element, if so then enters it into table
     public static void restruct() {
         for(int i=0; i<notes.length; i++) {
@@ -149,6 +186,10 @@ public class Main {
     }
 
     public static boolean isComplete() {
+        notehistory = notes.clone();
+        if(subtables != null) {
+            subtablehistory = subtables.clone();
+        }
         for(int i=0; i<table.length; i++) {
             for(int j=0; j<table[i].length; j++) {
                 if(table[i][j] == 0) {
@@ -158,8 +199,40 @@ public class Main {
         }
         return true;
     }
+    
+    public static boolean isProgress() {
+        if(subtables == null || subtablehistory == null) {return true;}
+
+        for(int i=0; i<notes.length; i++) {
+            for(int j=0; j<notes[i].length; j++) {
+                if(notes[i][j] != null && notehistory[i][j] != null) {
+                    if(notes[i][j].length != notehistory[i][j].length) {
+                        return true;
+                    }
+                    for(int k=0; k<notes[i][j].length; k++) {
+                        if(notehistory[i][j][k] != notes[i][j][k]) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        for(int i=0; i<subtables.length; i++) {
+            if(subtablehistory[i].length != subtables[i].length) {
+                return true;
+            }
+            for(int j=0; j<subtablehistory[i].length; j++) {
+                if(subtablehistory[i][j] != subtables[i][j]) {
+                        return true;
+                }
+            }
+        }
+        
+
+        System.out.println("Was not able to solve sudoku puzzle. May be impossible to solve due to lack of entries.");
+        return false;
+    }
     public static void main(String[] args) {
-        int[][] subtables = null;
         try{
             //tries to find a file from the input, appends .txt
             File fil = new File(args[0]);
@@ -185,7 +258,7 @@ public class Main {
                 }
             }
 
-            printTable();
+            //printTable();
             fileReader.close();
         }
         //Returns error if file not found
@@ -195,7 +268,29 @@ public class Main {
             return;
         }
 
+        //if 5 cannot be anywhere else in a grid, it must be at that spot, do this check
         while(!isComplete()) {
+            /* for(int i=0; i<notes.length; i++) {
+            for(int j=0; j<notes[i].length; j++) {
+                System.out.print("{");
+                if(notes[i][j] != null){
+                    for(int k=0; k<notes[i][j].length; k++) {
+                        if(notes[i][j].length == 1) {
+                            table[i][j] = notes[i][j][k];
+                            notes[i][j][k] = 0;
+                        }
+                        if(notes[i][j][k] != 0) {
+                            System.out.print(notes[i][j][k]);
+                        }
+                    }
+                }
+                System.out.print("}, ");
+            }
+            System.out.println();
+        } */
+        
+        System.out.println();
+            printTable();
             checkRows();
             checkColumns();
             subtables = createSubTables();
@@ -207,6 +302,7 @@ public class Main {
         //--------------------------------------------only--printing--below-----------------------------------------------------------------------------
 
         
+        /* 
         //prints out the subtables
         for(int i=0; i<table.length; i++) {
             //System.out.print("{");
@@ -218,9 +314,8 @@ public class Main {
         }
 
 
-
         System.out.println();
-        //prints out the row notes
+        //prints out the notes
         for(int i=0; i<notes.length; i++) {
             for(int j=0; j<notes[i].length; j++) {
                 System.out.print("{");
@@ -241,9 +336,10 @@ public class Main {
         }
         
         System.out.println();
+         */
 
         //prints out the table
         printTable();
-        
+
     }
 }
