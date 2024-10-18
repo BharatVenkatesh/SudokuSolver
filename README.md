@@ -9,4 +9,10 @@ Input must be in the format:\
 3 0 4 9 2 8 5 0 0\
 0 8 0 7 6 3 4 0 0\
 0 0 0 4 0 0 0 7 8\
-spaces between each value and a one new line for each row.
+spaces between each value and a one new line for each row.\
+\
+answers to each input are in check.txt\
+\
+to run the program write:\
+javac Main.java\
+java Main input1.txt > output1.txt
